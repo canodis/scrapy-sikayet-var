@@ -4,23 +4,17 @@ import scrapy
 class SamsungSpider(scrapy.Spider):
     name = "samsung"
     allowed_domains = ["www.sikayetvar.com"]
-    start_urls = ["http://www.sikayetvar.com/"]
+    start_urls = ["https://www.sikayetvar.com/samsung-telefon?page=1"]
 
     def parse(self, response):
-        pass
+        products = response.xpath('//article[@class="story-card complaint-card ga-v ga-c"]')
+        for product in products:
+            yield { 'title' : product.xpath('.//section/h2[@class="complaint-title"]/a[@class="complaint-layer"]/text()').get(),
+                   'problem': product.xpath('.//section/p/text()').extract()}
+         # Bir sonraki sayfayı oluşturun
+        next_page_number = int(response.url.split("=")[-1]) + 1
+        next_page_url = f"https://www.sikayetvar.com/samsung-telefon?page={next_page_number}"
+    
+        # Bir sonraki sayfaya istek gönderin
+        yield scrapy.Request(next_page_url, callback=self.parse)   
 
-# for porduct in products:
-#     img_url = product.xpath('.//div[@class="image_container"]/a/img/@src').get()
-#     book_name = product.xpath('//h3/a/text()').get()
-#     book_price = product.xpath('//div[@class="product_price"]/p[@class="price_color"]/text()').get()
-#     book_stock = product.xpath('//div[@class="product_price"]/p[@class="instock availability"]/text()').get()
-#     print('image : ', img_url, '\nbook name : ', book_name, '\nbook price : ', book_price, '\nin stock : ', book_stock)
-
-
-products = response.xpath('//article/@class["story-card complaint-card ga-v ga-c"]')
-
-for product in products:
-    title = product.xpath('.//section/h2[@class="complaint-title"]/a[@class="complaint-layer"]/text()').get()
-    print("title : ", title)
-    problem = product.xpath('.//section/p/text()').extract()
-    print("Problem : ", problem[0])

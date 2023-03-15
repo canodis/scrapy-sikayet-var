@@ -8,7 +8,7 @@
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
 BOT_NAME = "sikayetvar"
-
+DOWNLOAD_DELAY = 1
 SPIDER_MODULES = ["sikayetvar.spiders"]
 NEWSPIDER_MODULE = "sikayetvar.spiders"
 
@@ -91,3 +91,6 @@ ROBOTSTXT_OBEY = True
 REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
+
+FEED_FORMAT = "json"
+FEED_URI = "output.json"
